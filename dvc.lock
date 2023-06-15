@@ -1,0 +1,94 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+    - path: ../LoadTraces/spec06/473.astar-s1.txt.xz
+      md5: fc15414dd9ef7e04f2fda20bd459cef2
+      size: 31279168
+    - path: src/data_loader.py
+      md5: 4c9a609303cf8083e09b98317235dd7d
+      size: 1421
+    - path: src/preprocess.py
+      md5: 2fe0979a5a0e3b0df92644f4de2135e8
+      size: 9448
+    params:
+      params.yaml:
+        apps.app: 473.astar-s1.txt.xz
+        hardware:
+          block-bits: 6
+          total-bits: 64
+          look-back: 9
+          pred-forward: 128
+          page-bits: 12
+          delta-bound: 128
+          split-bits: 6
+          filter-size: 16
+          bitmap-size: 256
+          block-num-bits: 58
+        system:
+          gpu-id: 0
+          traces: ../LoadTraces/spec06
+          processed: processed
+          model: model
+        teacher.number: 5
+        trace-data:
+          train: 20
+          total: 30
+          skip: 0
+          batch-size: 256
+    outs:
+    - path: processed/test_df_1.pt
+      md5: 87e6c59580ee086d25ab808b3df92dbc
+      size: 327296571
+    - path: processed/test_df_2.pt
+      md5: fdcb6f8e57fb317691c2bbbc828f4ae8
+      size: 14292005
+    - path: processed/test_df_3.pt
+      md5: d6e959f245616d9a0a9da26ef26496ec
+      size: 13444611
+    - path: processed/test_df_4.pt
+      md5: 7578ff073305627f637a0ad321dc2d2c
+      size: 11199812
+    - path: processed/test_df_5.pt
+      md5: 649b18a097b0b1e07b3464c5a734e4a4
+      size: 17755650
+    - path: processed/test_df_stu.pt
+      md5: c93a114b5bbadc9846a2840d21936ae5
+      size: 379397144
+    - path: processed/test_loader_1.pt
+      md5: 17cfebc3c743145a369c1510c11eff5e
+      size: 345824634
+    - path: processed/test_loader_2.pt
+      md5: 20b581da2ca92cfd13fb2cf374eafe25
+      size: 15057392
+    - path: processed/test_loader_3.pt
+      md5: 2c4f94d3190ef94d3061796a1e4b6e2b
+      size: 14170736
+    - path: processed/test_loader_4.pt
+      md5: 8afbea19beb3815c070e1fc1b5313888
+      size: 11778404
+    - path: processed/test_loader_5.pt
+      md5: b2c988543c734588d12ad5e49a34902a
+      size: 18685411
+    - path: processed/test_loader_stu.pt
+      md5: 47ffe33a93f03c8a81ae64830be9ba65
+      size: 400684908
+    - path: processed/train_loader_1.pt
+      md5: dbcf07ef9920f57439b71e014712adb8
+      size: 608634517
+    - path: processed/train_loader_2.pt
+      md5: 75aced84e67521e5a0e7e8f54bebffaf
+      size: 67926239
+    - path: processed/train_loader_3.pt
+      md5: 2783509098d92a638db273da45866328
+      size: 61470101
+    - path: processed/train_loader_4.pt
+      md5: 75b34bc0633a6fd6541135dedc2db047
+      size: 58022008
+    - path: processed/train_loader_5.pt
+      md5: f189c4a0ed80c819d6b7f48bda72f44d
+      size: 65110580
+    - path: processed/train_loader_stu.pt
+      md5: b2979f6bd984603028722a1663e6c2a5
+      size: 846482324

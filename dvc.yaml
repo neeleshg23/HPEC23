@@ -1,0 +1,137 @@
+stages:
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+      - ${system.traces}/${apps.app}
+      - src/preprocess.py
+      - src/data_loader.py
+    params:
+      - system
+      - apps.app
+      - teacher.number
+      - trace-data
+      - hardware
+    outs:
+      - processed/train_loader_1.pt
+      - processed/test_loader_1.pt
+      - processed/test_df_1.pt
+      - processed/train_loader_2.pt
+      - processed/test_loader_2.pt
+      - processed/test_df_2.pt
+      - processed/train_loader_3.pt
+      - processed/test_loader_3.pt
+      - processed/test_df_3.pt
+      - processed/train_loader_4.pt
+      - processed/test_loader_4.pt
+      - processed/test_df_4.pt
+      - processed/train_loader_5.pt
+      - processed/test_loader_5.pt
+      - processed/test_df_5.pt
+      - processed/train_loader_stu.pt
+      - processed/test_loader_stu.pt
+      - processed/test_df_stu.pt
+
+  train-tch-1:
+    cmd: python src/train_tch.py
+    deps:
+      - processed/train_loader_1.pt
+      - processed/test_loader_1.pt
+      - processed/train_loader_2.pt
+      - processed/test_loader_2.pt
+      - processed/train_loader_3.pt
+      - processed/test_loader_3.pt
+      - processed/train_loader_4.pt
+      - processed/test_loader_4.pt
+      - processed/train_loader_5.pt
+      - processed/test_loader_5.pt
+      - src/train_tch.py
+    params:
+      - teacher.models
+      - model.tch_${teacher.models[0]}
+      - model.tch_${teacher.models[1]}
+      - model.tch_${teacher.models[2]}
+      - model.tch_${teacher.models[3]}
+      - model.tch_${teacher.models[4]}
+      - system
+      - hardware
+      - train
+    # metrics:
+    #   - res/plots/metrics/train_tch_1/test_loss.tsv:
+    #       cache: false
+    #   - res/plots/metrics/train_tch_1/train_loss.tsv:
+    #       cache: false
+    outs:
+      - model/teacher_1.pth
+      - model/teacher_2.pth
+      - model/teacher_3.pth
+      - model/teacher_4.pth
+      - model/teacher_5.pth
+
+
+#   validate-tch-1:
+#     cmd: python src/validate_tch.py
+#     deps:
+#       - processed/test_loader_1
+#       - processed/test_df_1
+#       - model/teacher_1.pth
+#       - src/validate_tch.py
+#     params:
+#       - teacher
+#       - model.tch_${teacher.model}
+#       - apps.app
+#       - system
+#       - hardware
+#     metrics:
+#       - res/teacher_1.json:
+#           cache: false
+#   train-stu:
+#     cmd: python src/train_stu.py
+#     deps:
+#       - model/teacher_1.pth
+#       - processed/train_loader_1
+#       - processed/test_loader_1
+#       - src/train_stu.py
+#     params:
+#       - student.model
+#       - model.stu_${student.model}
+#       - teacher.model
+#       - model.tch_${teacher.model}
+#       - system
+#       - hardware
+#       - train
+#     metrics:
+#       - res/plots/metrics/train_stu/test_loss.tsv:
+#           cache: false
+#       - res/plots/metrics/train_stu/train_loss.tsv:
+#           cache: false
+#     outs:
+#       - model/student.pth
+
+#   validate-stu:
+#     cmd: python src/validate_stu.py
+#     deps:
+#       - processed/test_loader_1
+#       - processed/test_df_1
+#       - model/student.pth
+#       - src/validate_stu.py
+#     params:
+#       - student
+#       - model.stu_${student.model}
+#       - apps.app
+#       - system
+#       - hardware
+#     metrics:
+#       - res/student.json:
+#           cache: false
+
+# plots:
+#   - train-tch-1:
+#       y:
+#         res/plots/metrics/train_tch_1/train_loss.tsv: train_tch_1/train_loss
+#         res/plots/metrics/train_tch_1/test_loss.tsv: train_tch_1/test_loss
+#       y_label: loss
+#   - train-stu:
+#       y:
+#         res/plots/metrics/train_stu/train_loss.tsv: train_stu/train_loss
+#         res/plots/metrics/train_stu/test_loss.tsv: train_stu/test_loss
+#       y_label: loss
