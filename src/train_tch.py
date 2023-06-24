@@ -1,11 +1,8 @@
 import os
-import pickle
-import sys
 import warnings
 warnings.filterwarnings('ignore')
 
 import torch
-from torch.multiprocessing import set_start_method
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.optim.lr_scheduler import StepLR
@@ -27,13 +24,9 @@ sigmoid = torch.nn.Sigmoid()
 
 def train(ep, train_loader, model_save_path):
     global steps
-    print('c')
     epoch_loss = 0
     model.train()
-    print('g')
-    print(train_loader)
     for batch_idx, (data, target) in enumerate(train_loader):#d,t: (torch.Size([64, 1, 784]),64)        
-        print('h')        
         optimizer.zero_grad()
         output = sigmoid(model(data))
         loss = F.binary_cross_entropy(output, target, reduction='mean')
@@ -46,13 +39,11 @@ def train(ep, train_loader, model_save_path):
 
 
 def test(test_loader):
-    print('e')
     model.eval()
     test_loss = 0
     correct = 0
     with torch.no_grad():
         for data, target in test_loader:
-            print('f')
             output = sigmoid(model(data))
             test_loss += F.binary_cross_entropy(output, target, reduction='mean').item()
             thresh=0.5
@@ -62,7 +53,7 @@ def test(test_loader):
         test_loss /=  len(test_loader)
         return test_loss   
 
-def run_epoch(epochs, early_stop, loading, model_save_path, train_loader, test_loader, live):
+def run_epoch(epochs, early_stop, loading, model_save_path, train_loader, test_loader, tch, live):
     if loading==True:
         model.load_state_dict(torch.load(model_save_path))
         print("-------------Model Loaded------------")
@@ -70,16 +61,14 @@ def run_epoch(epochs, early_stop, loading, model_save_path, train_loader, test_l
     best_loss=0
     early_stop = early_stop
     curr_early_stop = early_stop
-    print('a')
     for epoch in range(epochs):
-        print('b')
 
         train_loss=train(epoch,train_loader,model_save_path)
         test_loss=test(test_loader)
         print((f"Epoch: {epoch+1} - loss: {train_loss:.10f} - test_loss: {test_loss:.10f}"))
         
-        live.log_metric("train_tch_1/train_loss", train_loss)
-        live.log_metric("train_tch_1/test_loss", test_loss)
+        live.log_metric(f"train_tch_{tch}/train_loss", train_loss)
+        live.log_metric(f"train_tch_{tch}/test_loss", test_loss)
 
         if epoch == 0:
             best_loss=test_loss
@@ -126,13 +115,8 @@ def main():
         model_save_path = os.path.join(model_dir, f"teacher_{tch}.pth")
         
         print("Loading data for tch:", tch)
-        try:
-            train_loader = torch.load(os.path.join(processed_dir, f"train_loader_{tch}.pt"), pickling_method="pickle")
-            test_loader = torch.load(os.path.join(processed_dir, f"test_loader_{tch}.pt"), pickling_method="pickle")
-        except Exception as e:
-            print("Error loading data for tch:", tch)
-            print(e)
-            continue
+        train_loader = torch.load(os.path.join(processed_dir, f"train_loader_{tch}.pt"))
+        test_loader = torch.load(os.path.join(processed_dir, f"test_loader_{tch}.pt"))
 
         print("Data loaded successfully for tch:", tch)
                                                                                                                 
@@ -144,7 +128,7 @@ def main():
 
         with Live(dir="res", resume=True) as live:
             live.step = 1
-            run_epoch(epochs, early_stop, loading, model_save_path, train_loader, test_loader, live)
+            run_epoch(epochs, early_stop, loading, model_save_path, train_loader, test_loader, tch, live)
 
 if __name__ == "__main__":
     main()

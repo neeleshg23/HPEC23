@@ -19,9 +19,6 @@ teacher:
 student:
   model: d
 
-cluster:
-  alg: k
-
 train:
   epochs: 50
   lr: 0.0002
@@ -32,10 +29,10 @@ train:
   temperature: 5
 
 trace-data:
-  train: 20
-  total: 30
+  train: 3
+  total: 5
   skip: 0
-  batch-size: 256 #torch.save DataFrame exceeds 16GB RAM
+  batch-size: 256
 
 model:
   tch_d:

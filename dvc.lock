@@ -10,8 +10,8 @@ stages:
       md5: 4c9a609303cf8083e09b98317235dd7d
       size: 1421
     - path: src/preprocess.py
-      md5: 2fe0979a5a0e3b0df92644f4de2135e8
-      size: 9448
+      md5: 6a73387623a0c7962b90f11e0724f8b4
+      size: 8844
     params:
       params.yaml:
         apps.app: 473.astar-s1.txt.xz
@@ -33,62 +33,181 @@ stages:
           model: model
         teacher.number: 5
         trace-data:
-          train: 20
-          total: 30
+          train: 3
+          total: 5
           skip: 0
           batch-size: 256
     outs:
-    - path: processed/test_df_1.pt
-      md5: 87e6c59580ee086d25ab808b3df92dbc
-      size: 327296571
-    - path: processed/test_df_2.pt
-      md5: fdcb6f8e57fb317691c2bbbc828f4ae8
-      size: 14292005
-    - path: processed/test_df_3.pt
-      md5: d6e959f245616d9a0a9da26ef26496ec
-      size: 13444611
-    - path: processed/test_df_4.pt
-      md5: 7578ff073305627f637a0ad321dc2d2c
-      size: 11199812
-    - path: processed/test_df_5.pt
-      md5: 649b18a097b0b1e07b3464c5a734e4a4
-      size: 17755650
-    - path: processed/test_df_stu.pt
-      md5: c93a114b5bbadc9846a2840d21936ae5
-      size: 379397144
+    - path: processed/df_test_1.pt
+      md5: 5894a0ea8818bd59e722cb15ba436ec9
+      size: 130809587
+    - path: processed/df_test_2.pt
+      md5: f2c64b1014112d7090bcc49fbc5c0240
+      size: 34986611
+    - path: processed/df_test_3.pt
+      md5: c9be0180037e75502cc294547bec24d6
+      size: 30813875
+    - path: processed/df_test_4.pt
+      md5: cdbaa077c75a4dd45158f451bac943e0
+      size: 12891955
+    - path: processed/df_test_5.pt
+      md5: b0167439ece827e520910ca260b92531
+      size: 9150259
+    - path: processed/df_test_stu.pt
+      md5: cec4e8c331b606b70f06be739bfdfca7
+      size: 216679799
     - path: processed/test_loader_1.pt
-      md5: 17cfebc3c743145a369c1510c11eff5e
-      size: 345824634
+      md5: 38955874edd6603027e7cef6a39707ac
+      size: 143655227
     - path: processed/test_loader_2.pt
-      md5: 20b581da2ca92cfd13fb2cf374eafe25
-      size: 15057392
+      md5: a9159d36255494f564ce822197419181
+      size: 38367099
     - path: processed/test_loader_3.pt
-      md5: 2c4f94d3190ef94d3061796a1e4b6e2b
-      size: 14170736
+      md5: 2c5a10928cbae67b4136de0d4e21b3cd
+      size: 33792187
     - path: processed/test_loader_4.pt
-      md5: 8afbea19beb3815c070e1fc1b5313888
-      size: 11778404
+      md5: f3af3c520385973646f4613bb141213b
+      size: 14116667
     - path: processed/test_loader_5.pt
-      md5: b2c988543c734588d12ad5e49a34902a
-      size: 18685411
+      md5: 196a52a2bae66694ad25791dd7340ac0
+      size: 10015163
     - path: processed/test_loader_stu.pt
-      md5: 47ffe33a93f03c8a81ae64830be9ba65
-      size: 400684908
+      md5: 752e546907881933c8072b127b72ef6f
+      size: 237979583
     - path: processed/train_loader_1.pt
-      md5: dbcf07ef9920f57439b71e014712adb8
-      size: 608634517
+      md5: f37b800987c8b7fe57869be4123754d5
+      size: 400123517
     - path: processed/train_loader_2.pt
-      md5: 75aced84e67521e5a0e7e8f54bebffaf
-      size: 67926239
+      md5: a3ace4af8756c65b134923cf161b4645
+      size: 27621565
     - path: processed/train_loader_3.pt
-      md5: 2783509098d92a638db273da45866328
-      size: 61470101
+      md5: 73eb3228727e770e7ab7a2ea55ba8639
+      size: 25368317
     - path: processed/train_loader_4.pt
-      md5: 75b34bc0633a6fd6541135dedc2db047
-      size: 58022008
+      md5: 6e0b3e6d09e9b3dc33e0ef223eaab6a2
+      size: 19368189
     - path: processed/train_loader_5.pt
-      md5: f189c4a0ed80c819d6b7f48bda72f44d
-      size: 65110580
-    - path: processed/train_loader_stu.pt
-      md5: b2979f6bd984603028722a1663e6c2a5
-      size: 846482324
+      md5: 05768058e28081abb9535f14727d47c9
+      size: 18389309
+  train-tchs:
+    cmd: python src/train_tch.py
+    deps:
+    - path: processed/test_loader_1.pt
+      md5: 283f841e04f0221f61415f54d9cc608b
+      size: 397789499
+    - path: processed/test_loader_2.pt
+      md5: 6d6d4bcee7420256b8130db5b7a4f7aa
+      size: 26836347
+    - path: processed/test_loader_3.pt
+      md5: 07af5be7202fecb292c478ddf475746f
+      size: 20382971
+    - path: processed/test_loader_4.pt
+      md5: d0e5390f0e9398994491082b0ab37a93
+      size: 57962491
+    - path: processed/test_loader_5.pt
+      md5: 0f40fe01d3c8c1c57e691a0213733150
+      size: 43693755
+    - path: processed/train_loader_1.pt
+      md5: 74132d216d66a62c1358150f17290252
+      size: 542048893
+    - path: processed/train_loader_2.pt
+      md5: 0c04f3742337c05ba3d45614a7657448
+      size: 71378493
+    - path: processed/train_loader_3.pt
+      md5: 114d57358906d17f664c4924bb837004
+      size: 63277373
+    - path: processed/train_loader_4.pt
+      md5: b12f3b179a81399bdf6a819773cfb0be
+      size: 29344445
+    - path: processed/train_loader_5.pt
+      md5: a3c99fec3f98672571928849be04c478
+      size: 25917885
+    - path: src/train_tch.py
+      md5: 0be3007aa65572b327b96d063cc41fbb
+      size: 4242
+    params:
+      params.yaml:
+        hardware:
+          block-bits: 6
+          total-bits: 64
+          look-back: 9
+          pred-forward: 128
+          page-bits: 12
+          delta-bound: 128
+          split-bits: 6
+          filter-size: 16
+          bitmap-size: 256
+          block-num-bits: 58
+        model.tch_v:
+          dim: 256
+          depth: 8
+          heads: 10
+          mlp-dim: 256
+          channels: 1
+        system:
+          gpu-id: 0
+          traces: ../LoadTraces/spec06
+          processed: processed
+          model: model
+        teacher:
+          number: 5
+          models:
+          - v
+          - v
+          - v
+          - v
+          - v
+        train:
+          epochs: 50
+          lr: 0.0002
+          gamma: 0.1
+          step-size: 20
+          early-stop: 10
+          alpha: 0.5
+          temperature: 5
+    outs:
+    - path: model/teacher_1.pth
+      md5: 159313deaa5de57ee773a0aa530ae0fb
+      size: 88465545
+    - path: model/teacher_2.pth
+      md5: 559f02343d38f4b0d9a23cff691ea701
+      size: 88465545
+    - path: model/teacher_3.pth
+      md5: 2f966e4bad0f2b2c2cdd00f6f922481c
+      size: 88465545
+    - path: model/teacher_4.pth
+      md5: 78c193604381de7228e7de21076a4299
+      size: 88465545
+    - path: model/teacher_5.pth
+      md5: 8d88dbe3682f682eac22c70de001ae7a
+      size: 88465545
+    - path: res/plots/metrics/train_tch_1/test_loss.tsv
+      md5: 00d1797bc01b7811b91abbe1662f1f7b
+      size: 535
+    - path: res/plots/metrics/train_tch_1/train_loss.tsv
+      md5: 3ae262850f08495b04c63fe80454effb
+      size: 540
+    - path: res/plots/metrics/train_tch_2/test_loss.tsv
+      md5: 668d4b606bf8b365d7c955d7638f6a33
+      size: 1196
+    - path: res/plots/metrics/train_tch_2/train_loss.tsv
+      md5: 45c48e5d6a0fc46f2c08c97864265bd1
+      size: 1205
+    - path: res/plots/metrics/train_tch_3/test_loss.tsv
+      md5: 55016228d04d3bade0eb1c2c56c04f4d
+      size: 1192
+    - path: res/plots/metrics/train_tch_3/train_loss.tsv
+      md5: 0438e1cba4ac87bc5914174df65507ca
+      size: 1198
+    - path: res/plots/metrics/train_tch_4/test_loss.tsv
+      md5: 2b9d6e03c00b8ec7e0bf13ad6af6a8a1
+      size: 1184
+    - path: res/plots/metrics/train_tch_4/train_loss.tsv
+      md5: d3a882ab76a1fb8126f0e7389de0de89
+      size: 1185
+    - path: res/plots/metrics/train_tch_5/test_loss.tsv
+      md5: 450ba48b1b833682e422483923477d40
+      size: 1178
+    - path: res/plots/metrics/train_tch_5/train_loss.tsv
+      md5: 70b5ad7112db4fc1e6bcbc21abd57f9a
+      size: 1185

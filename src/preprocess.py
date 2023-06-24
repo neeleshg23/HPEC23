@@ -1,3 +1,4 @@
+import gc
 import itertools
 import lzma
 import os
@@ -175,7 +176,7 @@ def main():
     app = params["apps"]["app"]
 
     os.makedirs(os.path.join(processed_dir), exist_ok=True)
-    
+
     num_tch = params["teacher"]["number"]
 
     train = params["trace-data"]["train"]
@@ -186,67 +187,52 @@ def main():
     hardware = params["hardware"]
 
     print(f"Clustering {num_tch} different traces")
-    
+
     train_data, eval_data = read_load_trace_data(os.path.join(trace_dir, app), train, total, skip)
 
-    kmeans = KMeans(n_clusters=num_tch, init='k-means++', random_state=0, n_init=10)
+    df_train    = preprocessing(train_data, hardware)
+    df_test     = preprocessing(eval_data, hardware)
+    
+    with torch.no_grad():
+        torch.save(df_test, os.path.join(processed_dir,"df_test_stu.pt"))
 
-    df_train = preprocessing(train_data, hardware)
-    df_test = preprocessing(eval_data, hardware)
+    test_MAP_stu   = MAPDataset(df_test)
+    test_loader_stu= DataLoader(test_MAP_stu, batch_size=batch_size, shuffle=False, collate_fn=test_MAP_stu.collate_fn, num_workers=0)
 
-    data_train = df_train[['block_addr_delta']]
-    data_test = df_test[['block_addr_delta']]
+    with torch.no_grad():
+        torch.save(test_loader_stu, os.path.join(processed_dir, "test_loader_stu.pt"))
 
-    clusters_train = kmeans.fit_predict(data_train)
-    clusters_test = kmeans.predict(data_test)
+    data_train      = df_train[['block_addr_delta']]
+    data_test       = df_test[['block_addr_delta']]
+
+    kmeans          = KMeans(n_clusters=num_tch, init='k-means++', random_state=0, n_init=10)
+
+    clu_train       = kmeans.fit_predict(data_train)
+    clu_test        = kmeans.predict(data_test)
 
     for tch in range(num_tch):
-        print(f"Splitting and processing a split trace for tch:{tch+1} of {num_tch}")
+        train_idx       = np.where(clu_train == tch)[0]
+        test_idx        = np.where(clu_test == tch)[0]
 
-        train_indices = np.where(clusters_train == tch)[0]
-        test_indices = np.where(clusters_test == tch)[0]
+        df_train_tch    = df_train.iloc[train_idx]
+        df_test_tch     = df_test.iloc[test_idx]
 
-        train_data_tch = df_train.iloc[train_indices]
-        test_data_tch = df_test.iloc[test_indices]
+        train_data_tch   = MAPDataset(df_train_tch)
+        test_data_tch    = MAPDataset(df_test_tch)
 
-        train_dataset = MAPDataset(train_data_tch)
-        test_dataset = MAPDataset(test_data_tch)
+        train_loader    = DataLoader(train_data_tch, batch_size=batch_size, shuffle=True, collate_fn=train_data_tch.collate_fn, num_workers=0)
+        test_loader     = DataLoader(test_data_tch, batch_size=batch_size, shuffle=False, collate_fn=test_data_tch.collate_fn, num_workers=0)
 
-        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=train_dataset.collate_fn, num_workers=4)
-        test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, collate_fn=test_dataset.collate_fn, num_workers=4)
+        print(f"Starting saving for tch:{tch+1} of {num_tch}")
         
-        torch.cuda.empty_cache()
+        with torch.no_grad():
+            torch.save(train_loader, os.path.join(processed_dir, f"train_loader_{tch+1}.pt"))
+            torch.save(test_loader, os.path.join(processed_dir, f"test_loader_{tch+1}.pt"))
+            torch.save(df_test_tch, os.path.join(processed_dir, f"df_test_{tch+1}.pt"))
 
-        torch.save(train_loader, os.path.join(processed_dir, f"train_loader_{tch+1}.pt"), pickle_module="pickle")
-        torch.save(test_loader, os.path.join(processed_dir, f"test_loader_{tch+1}.pt"), pickle_module="pickle")
-        torch.save(test_data_tch, os.path.join(processed_dir, f"test_df_{tch+1}.pt"), pickle_module="pickle")
-            
-        # torch.save(train_loader, os.path.join(processed_dir, f"train_loader_{tch+1}.pt"))
-        # torch.save(test_loader, os.path.join(processed_dir, f"test_loader_{tch+1}.pt"))
-        # torch.save(test_data_tch, os.path.join(processed_dir, f"test_df_{tch+1}.pt"))
+        print(f"DONE FOR tch:{tch+1} of {num_tch}")
 
-        print(f"Finished saving a split trace for tch:{tch+1} of {num_tch}")
-    
-    print(f"Splitting and processing trace for student over all instructions")
-
-    df_train['cluster'] = clusters_train
-    df_test['cluster'] = clusters_test
-
-    train_dataset = MAPDataset(df_train)
-    test_dataset = MAPDataset(df_test)
-
-    train_loader = DataLoader(train_dataset,batch_size=batch_size,shuffle=True,collate_fn=train_dataset.collate_fn)
-    test_loader = DataLoader(test_dataset,batch_size=batch_size,shuffle=False,collate_fn=test_dataset.collate_fn)
-
-    # with open(os.path.join(processed_dir, f"train_loader_stu.pt"), 'wb') as f:
-    #     pickle.dump(train_loader, f)
-    # with open(os.path.join(processed_dir, f"test_loader_stu.pt"), 'wb') as f:
-    #     pickle.dump(test_loader, f)
-    # with open(os.path.join(processed_dir, f"test_df_stu.pt"), 'wb') as f:
-    #     pickle.dump(df_test, f)
-
-    print(f"Finished saving a split trace for stu")
-
+    print("All loaders saved!")
 
 if __name__ == "__main__":
     main()

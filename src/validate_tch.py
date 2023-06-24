@@ -10,10 +10,8 @@ import pandas as pd
 import torch
 from tqdm import tqdm
 from sklearn.metrics import auc, f1_score, precision_score, recall_score, precision_recall_curve, roc_curve
-from models.d import DenseNetTeacher
-from models.r import resnet50
-from models.v import TMAP
 
+from utils import select_tch
 from preprocess import to_bitmap
 
 model = None
@@ -91,20 +89,19 @@ def threshold_throttleing(test_df,throttle_type="f1",optimal_type="micro",topk=2
     
     return test_df, best_threshold
 
-def model_prediction(test_loader, test_df, model_save_path):#"top_k";"degree";"optimal"
+def model_prediction(test_loader, test_df, model_save_path):
     print("predicting")
-    prediction=[]
+    prediction = []
     model.load_state_dict(torch.load(model_save_path))
     model.to(device)
     model.eval()
-    y_score=np.array([])
     for data, _ in tqdm(test_loader):
         output = sigmoid(model(data))
-        #prediction.extend(output.cpu())
         prediction.extend(output.cpu().detach().numpy())
-    test_df["y_score"]= prediction
 
-    return test_df[['id', 'cycle', 'addr', 'ip','block_address','future', 'y_score']]
+    test_df["y_score"] = prediction
+
+    return test_df[['id', 'cycle', 'addr', 'ip', 'block_address', 'future', 'y_score']]
 
 def evaluate(y_test,y_pred_bin):
     f1_score_res=f1_score(y_test, y_pred_bin, average='micro')
@@ -138,61 +135,31 @@ def main():
     
     params = dvc.api.params_show()
 
-    option = params["teacher"]["model"]
-    num_tch = params["teacher"]["number"]
-
+    teacher_models = params["teacher"]["models"]
+    gpu_id = params["system"]["gpu-id"]
     processed_dir = params["system"]["processed"]
     model_dir = params["system"]["model"]
-    gpu_id = params["system"]["gpu-id"]
 
     BITMAP_SIZE = params["hardware"]["bitmap-size"]
-    image_size = (params["hardware"]["look-back"]+1, params["hardware"]["block-num-bits"]//params["hardware"]["split-bits"]+1)
-    patch_size = (1, image_size[1])
-    num_classes = 2*params["hardware"]["delta-bound"]
 
     app_name = params["apps"]["app"]
 
-    if option == "d":
-        channels = params["model"][f"tch_{option}"]["channels"]
-        model = DenseNetTeacher(num_classes, channels)
-    elif option == "r":
-        dim = params["model"][f"tch_{option}"]["dim"]
-        channels = params["model"][f"tch_{option}"]["channels"]
-        model = resnet50(num_classes, channels)
-    elif option == "v":
-        dim = params["model"][f"tch_{option}"]["dim"]
-        depth = params["model"][f"tch_{option}"]["depth"]
-        heads = params["model"][f"tch_{option}"]["heads"]
-        mlp_dim = params["model"][f"tch_{option}"]["mlp-dim"]
-        channels = params["model"][f"tch_{option}"]["channels"]
-        model = TMAP(
-            image_size=image_size,
-            patch_size=patch_size,
-            num_classes=num_classes,
-            dim=dim,
-            depth=depth,
-            heads=heads,
-            mlp_dim=mlp_dim,
-            channels=channels,
-            dim_head=mlp_dim
-        )
-    # elif option == "m":
-    #     model = tch_m  
-      
     device = torch.device(f"cuda:{gpu_id}" if torch.cuda.is_available() else "cpu")
 
-    test_loader = torch.load(os.path.join(processed_dir, f"test_loader_{num_tch}"))
-    test_df = torch.load(os.path.join(processed_dir, f"test_df_{num_tch}"))
+    for tch, option in enumerate(teacher_models, start=1):
+        model = select_tch(option)
+        model_save_path = os.path.join(model_dir, f"teacher_{tch}.pth")
 
-    model_save_path = os.path.join(model_dir, f"teacher_{num_tch}.pth")
-    
-    res = run_val(test_loader, test_df, app_name, model_save_path)
-    
-    file_path = f"res/teacher_{num_tch}.json"
-    with open(file_path, "w") as f:
-        json.dump(str(res), f)
+        test_loader = torch.load(os.path.join(processed_dir, f"test_loader_{tch}.pt"))
+        df_test = torch.load(os.path.join(processed_dir, f"df_test_{tch}.pt"))
 
-    print(f"Done: results saved at: res/teacher_{num_tch}.json")
+        res = run_val(test_loader, df_test, app_name, model_save_path)
+    
+        file_path = f"res/teacher_{tch}.json"
+        with open(file_path, "w") as f:
+            print(res)
+
+        print(f"Done: results saved at: res/teacher_{tch}.json")
 
 if __name__ == "__main__":
     main()
