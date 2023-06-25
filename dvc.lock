@@ -10,8 +10,9 @@ stages:
       md5: 4c9a609303cf8083e09b98317235dd7d
       size: 1421
     - path: src/preprocess.py
-      md5: 6a73387623a0c7962b90f11e0724f8b4
-      size: 8844
+      md5: 382bc84ee0fe32fa3c8c77d439c6950b
+      size: 8832
+      isexec: true
     params:
       params.yaml:
         apps.app: 473.astar-s1.txt.xz
@@ -33,95 +34,95 @@ stages:
           model: model
         teacher.number: 5
         trace-data:
-          train: 3
-          total: 5
-          skip: 0
+          train: 2
+          total: 3
+          skip: 1
           batch-size: 256
     outs:
     - path: processed/df_test_1.pt
-      md5: 5894a0ea8818bd59e722cb15ba436ec9
-      size: 130809587
+      md5: 5330d3d725bc241da0493411ecca02e7
+      size: 3363635
     - path: processed/df_test_2.pt
-      md5: f2c64b1014112d7090bcc49fbc5c0240
-      size: 34986611
+      md5: 33cbbdf3f050f5ea45e4e770b8d7fe75
+      size: 65040307
     - path: processed/df_test_3.pt
-      md5: c9be0180037e75502cc294547bec24d6
-      size: 30813875
+      md5: 913c8f5c196130441e59cbf369fc1166
+      size: 13639923
     - path: processed/df_test_4.pt
-      md5: cdbaa077c75a4dd45158f451bac943e0
-      size: 12891955
+      md5: dcf520d6ea756bc40f2f8492a19bbe59
+      size: 10817459
     - path: processed/df_test_5.pt
-      md5: b0167439ece827e520910ca260b92531
-      size: 9150259
+      md5: 87926061b0daee9f3ee35a3c6f08e137
+      size: 3636915
     - path: processed/df_test_stu.pt
-      md5: cec4e8c331b606b70f06be739bfdfca7
-      size: 216679799
+      md5: 9f254a023ef6536a8eca22cb23f62831
+      size: 95502519
     - path: processed/test_loader_1.pt
-      md5: 38955874edd6603027e7cef6a39707ac
-      size: 143655227
+      md5: 7abb6a8ffa8c6b0fe17391e6e2c88c53
+      size: 3677307
     - path: processed/test_loader_2.pt
-      md5: a9159d36255494f564ce822197419181
-      size: 38367099
+      md5: 03c425b835c1b667f828e0f00bcb20fb
+      size: 71425851
     - path: processed/test_loader_3.pt
-      md5: 2c5a10928cbae67b4136de0d4e21b3cd
-      size: 33792187
+      md5: 8b5b4a699cfde5d396311b3982ceb787
+      size: 14950395
     - path: processed/test_loader_4.pt
-      md5: f3af3c520385973646f4613bb141213b
-      size: 14116667
+      md5: 69b275b1d21392b17ebef3d3c01d4a96
+      size: 11850427
     - path: processed/test_loader_5.pt
-      md5: 196a52a2bae66694ad25791dd7340ac0
-      size: 10015163
+      md5: 356190fcaf1f05d24f7b2b4ed6936236
+      size: 3977915
     - path: processed/test_loader_stu.pt
-      md5: 752e546907881933c8072b127b72ef6f
-      size: 237979583
+      md5: 5b6ed2d01fa6580506f03f77894d26bb
+      size: 104891071
     - path: processed/train_loader_1.pt
-      md5: f37b800987c8b7fe57869be4123754d5
-      size: 400123517
+      md5: 41264025282d375788607e368f3b7c7e
+      size: 10040509
     - path: processed/train_loader_2.pt
-      md5: a3ace4af8756c65b134923cf161b4645
-      size: 27621565
+      md5: a3884a2c43cf55a98ffb80113e47eeaf
+      size: 133867389
     - path: processed/train_loader_3.pt
-      md5: 73eb3228727e770e7ab7a2ea55ba8639
-      size: 25368317
+      md5: f2c7a97c4c2e1d86ea8c9018abacada1
+      size: 11247933
     - path: processed/train_loader_4.pt
-      md5: 6e0b3e6d09e9b3dc33e0ef223eaab6a2
-      size: 19368189
+      md5: 33f7f49b9217c4f6a03f3b02555f60bc
+      size: 12043325
     - path: processed/train_loader_5.pt
-      md5: 05768058e28081abb9535f14727d47c9
-      size: 18389309
+      md5: 23a79ef51792abeafe9f07d3ae0a7450
+      size: 10426493
   train-tchs:
     cmd: python src/train_tch.py
     deps:
     - path: processed/test_loader_1.pt
-      md5: 283f841e04f0221f61415f54d9cc608b
-      size: 397789499
+      md5: 7abb6a8ffa8c6b0fe17391e6e2c88c53
+      size: 3677307
     - path: processed/test_loader_2.pt
-      md5: 6d6d4bcee7420256b8130db5b7a4f7aa
-      size: 26836347
+      md5: 03c425b835c1b667f828e0f00bcb20fb
+      size: 71425851
     - path: processed/test_loader_3.pt
-      md5: 07af5be7202fecb292c478ddf475746f
-      size: 20382971
+      md5: 8b5b4a699cfde5d396311b3982ceb787
+      size: 14950395
     - path: processed/test_loader_4.pt
-      md5: d0e5390f0e9398994491082b0ab37a93
-      size: 57962491
+      md5: 69b275b1d21392b17ebef3d3c01d4a96
+      size: 11850427
     - path: processed/test_loader_5.pt
-      md5: 0f40fe01d3c8c1c57e691a0213733150
-      size: 43693755
+      md5: 356190fcaf1f05d24f7b2b4ed6936236
+      size: 3977915
     - path: processed/train_loader_1.pt
-      md5: 74132d216d66a62c1358150f17290252
-      size: 542048893
+      md5: 41264025282d375788607e368f3b7c7e
+      size: 10040509
     - path: processed/train_loader_2.pt
-      md5: 0c04f3742337c05ba3d45614a7657448
-      size: 71378493
+      md5: a3884a2c43cf55a98ffb80113e47eeaf
+      size: 133867389
     - path: processed/train_loader_3.pt
-      md5: 114d57358906d17f664c4924bb837004
-      size: 63277373
+      md5: f2c7a97c4c2e1d86ea8c9018abacada1
+      size: 11247933
     - path: processed/train_loader_4.pt
-      md5: b12f3b179a81399bdf6a819773cfb0be
-      size: 29344445
+      md5: 33f7f49b9217c4f6a03f3b02555f60bc
+      size: 12043325
     - path: processed/train_loader_5.pt
-      md5: a3c99fec3f98672571928849be04c478
-      size: 25917885
+      md5: 23a79ef51792abeafe9f07d3ae0a7450
+      size: 10426493
     - path: src/train_tch.py
       md5: 0be3007aa65572b327b96d063cc41fbb
       size: 4242
@@ -167,47 +168,131 @@ stages:
           temperature: 5
     outs:
     - path: model/teacher_1.pth
-      md5: 159313deaa5de57ee773a0aa530ae0fb
+      md5: a0d152ffd89b8073bfeae965d927814e
       size: 88465545
     - path: model/teacher_2.pth
-      md5: 559f02343d38f4b0d9a23cff691ea701
+      md5: 0f8b539a019fcf1ad2f2236b7b24975f
       size: 88465545
     - path: model/teacher_3.pth
-      md5: 2f966e4bad0f2b2c2cdd00f6f922481c
+      md5: 9ffd594586fd6275556d64a7d67c7507
       size: 88465545
     - path: model/teacher_4.pth
-      md5: 78c193604381de7228e7de21076a4299
+      md5: 32ea1d3d297cb6fd80b89aa70df1ca69
       size: 88465545
     - path: model/teacher_5.pth
-      md5: 8d88dbe3682f682eac22c70de001ae7a
+      md5: 958c6fbee4506d2565033e903da90633
       size: 88465545
     - path: res/plots/metrics/train_tch_1/test_loss.tsv
-      md5: 00d1797bc01b7811b91abbe1662f1f7b
-      size: 535
+      md5: 3c95d15307b1e7c2bb14766c4503417c
+      size: 1163
     - path: res/plots/metrics/train_tch_1/train_loss.tsv
-      md5: 3ae262850f08495b04c63fe80454effb
-      size: 540
+      md5: 67ebdafd1817e7dc364edd9ba5d26a09
+      size: 1176
     - path: res/plots/metrics/train_tch_2/test_loss.tsv
-      md5: 668d4b606bf8b365d7c955d7638f6a33
-      size: 1196
+      md5: 388162ae8798c6edd07c75a0dab63958
+      size: 895
     - path: res/plots/metrics/train_tch_2/train_loss.tsv
-      md5: 45c48e5d6a0fc46f2c08c97864265bd1
-      size: 1205
+      md5: df2340df6d8713fb783089fcb994fcb0
+      size: 896
     - path: res/plots/metrics/train_tch_3/test_loss.tsv
-      md5: 55016228d04d3bade0eb1c2c56c04f4d
-      size: 1192
+      md5: 111226c503fa0b7d4a12e38569f42f1d
+      size: 1166
     - path: res/plots/metrics/train_tch_3/train_loss.tsv
-      md5: 0438e1cba4ac87bc5914174df65507ca
-      size: 1198
+      md5: 3e79fb9ee9365ddd17d724d011b707e3
+      size: 1171
     - path: res/plots/metrics/train_tch_4/test_loss.tsv
-      md5: 2b9d6e03c00b8ec7e0bf13ad6af6a8a1
-      size: 1184
+      md5: 83108e5e5f4853b579b02af045dbdb82
+      size: 1166
     - path: res/plots/metrics/train_tch_4/train_loss.tsv
-      md5: d3a882ab76a1fb8126f0e7389de0de89
-      size: 1185
+      md5: 301dc6a603a27f1a69654ba0c4918a3b
+      size: 1172
     - path: res/plots/metrics/train_tch_5/test_loss.tsv
-      md5: 450ba48b1b833682e422483923477d40
-      size: 1178
+      md5: 1718ab2375a627df05a3f6aae46a914b
+      size: 1159
     - path: res/plots/metrics/train_tch_5/train_loss.tsv
-      md5: 70b5ad7112db4fc1e6bcbc21abd57f9a
-      size: 1185
+      md5: 07424d32d76a1f5dceeae37578331598
+      size: 1167
+  validate-tchs:
+    cmd: python src/validate_tch.py
+    deps:
+    - path: model/teacher_1.pth
+      md5: a0d152ffd89b8073bfeae965d927814e
+      size: 88465545
+    - path: model/teacher_2.pth
+      md5: 0f8b539a019fcf1ad2f2236b7b24975f
+      size: 88465545
+    - path: model/teacher_3.pth
+      md5: 9ffd594586fd6275556d64a7d67c7507
+      size: 88465545
+    - path: model/teacher_4.pth
+      md5: 32ea1d3d297cb6fd80b89aa70df1ca69
+      size: 88465545
+    - path: model/teacher_5.pth
+      md5: 958c6fbee4506d2565033e903da90633
+      size: 88465545
+    - path: processed/df_test_1.pt
+      md5: 5330d3d725bc241da0493411ecca02e7
+      size: 3363635
+    - path: processed/df_test_2.pt
+      md5: 33cbbdf3f050f5ea45e4e770b8d7fe75
+      size: 65040307
+    - path: processed/df_test_3.pt
+      md5: 913c8f5c196130441e59cbf369fc1166
+      size: 13639923
+    - path: processed/df_test_4.pt
+      md5: dcf520d6ea756bc40f2f8492a19bbe59
+      size: 10817459
+    - path: processed/df_test_5.pt
+      md5: 87926061b0daee9f3ee35a3c6f08e137
+      size: 3636915
+    - path: processed/test_loader_1.pt
+      md5: 7abb6a8ffa8c6b0fe17391e6e2c88c53
+      size: 3677307
+    - path: processed/test_loader_2.pt
+      md5: 03c425b835c1b667f828e0f00bcb20fb
+      size: 71425851
+    - path: processed/test_loader_3.pt
+      md5: 8b5b4a699cfde5d396311b3982ceb787
+      size: 14950395
+    - path: processed/test_loader_4.pt
+      md5: 69b275b1d21392b17ebef3d3c01d4a96
+      size: 11850427
+    - path: processed/test_loader_5.pt
+      md5: 356190fcaf1f05d24f7b2b4ed6936236
+      size: 3977915
+    - path: src/validate_tch.py
+      md5: b68f6126d3ab805872399055609370e2
+      size: 6705
+    params:
+      params.yaml:
+        apps.app: 473.astar-s1.txt.xz
+        hardware:
+          block-bits: 6
+          total-bits: 64
+          look-back: 9
+          pred-forward: 128
+          page-bits: 12
+          delta-bound: 128
+          split-bits: 6
+          filter-size: 16
+          bitmap-size: 256
+          block-num-bits: 58
+        model.tch_v:
+          dim: 256
+          depth: 8
+          heads: 10
+          mlp-dim: 256
+          channels: 1
+        system:
+          gpu-id: 0
+          traces: ../LoadTraces/spec06
+          processed: processed
+          model: model
+        teacher:
+          number: 5
+          models:
+          - v
+          - v
+          - v
+          - v
+          - v

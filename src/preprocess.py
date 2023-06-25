@@ -178,26 +178,24 @@ def main():
     os.makedirs(os.path.join(processed_dir), exist_ok=True)
 
     num_tch = params["teacher"]["number"]
-
-    train = params["trace-data"]["train"]
-    total = params["trace-data"]["total"]
-    skip = params["trace-data"]["skip"]
-    batch_size = params["trace-data"]["batch-size"]
-
-    hardware = params["hardware"]
+    train   = params["trace-data"]["train"]
+    total   = params["trace-data"]["total"]
+    skip    = params["trace-data"]["skip"]
+    n_batch = params["trace-data"]["batch-size"]
+    hw      = params["hardware"]
 
     print(f"Clustering {num_tch} different traces")
 
     train_data, eval_data = read_load_trace_data(os.path.join(trace_dir, app), train, total, skip)
 
-    df_train    = preprocessing(train_data, hardware)
-    df_test     = preprocessing(eval_data, hardware)
+    df_train        = preprocessing(train_data, hw)
+    df_test         = preprocessing(eval_data, hw)
     
     with torch.no_grad():
         torch.save(df_test, os.path.join(processed_dir,"df_test_stu.pt"))
 
-    test_MAP_stu   = MAPDataset(df_test)
-    test_loader_stu= DataLoader(test_MAP_stu, batch_size=batch_size, shuffle=False, collate_fn=test_MAP_stu.collate_fn, num_workers=0)
+    test_MAP_stu    = MAPDataset(df_test)
+    test_loader_stu = DataLoader(test_MAP_stu, batch_size=n_batch, shuffle=False, collate_fn=test_MAP_stu.collate_fn, num_workers=0)
 
     with torch.no_grad():
         torch.save(test_loader_stu, os.path.join(processed_dir, "test_loader_stu.pt"))
@@ -217,11 +215,11 @@ def main():
         df_train_tch    = df_train.iloc[train_idx]
         df_test_tch     = df_test.iloc[test_idx]
 
-        train_data_tch   = MAPDataset(df_train_tch)
-        test_data_tch    = MAPDataset(df_test_tch)
+        train_data_tch  = MAPDataset(df_train_tch)
+        test_data_tch   = MAPDataset(df_test_tch)
 
-        train_loader    = DataLoader(train_data_tch, batch_size=batch_size, shuffle=True, collate_fn=train_data_tch.collate_fn, num_workers=0)
-        test_loader     = DataLoader(test_data_tch, batch_size=batch_size, shuffle=False, collate_fn=test_data_tch.collate_fn, num_workers=0)
+        train_loader    = DataLoader(train_data_tch, batch_size=n_batch, shuffle=True, collate_fn=train_data_tch.collate_fn, num_workers=0)
+        test_loader     = DataLoader(test_data_tch, batch_size=n_batch, shuffle=False, collate_fn=test_data_tch.collate_fn, num_workers=0)
 
         print(f"Starting saving for tch:{tch+1} of {num_tch}")
         

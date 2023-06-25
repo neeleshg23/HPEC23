@@ -29,9 +29,9 @@ train:
   temperature: 5
 
 trace-data:
-  train: 3
-  total: 5
-  skip: 0
+  train: 2
+  total: 3
+  skip: 1
   batch-size: 256
 
 model:

@@ -112,9 +112,18 @@ stages:
       - apps.app
       - system
       - hardware
-    # metrics:
-    #   - res/teacher_1.json:
-    #       cache: false
+    metrics:
+      - res/teacher_1.yaml:
+          cache: false
+      - res/teacher_2.yaml:
+          cache: false
+      - res/teacher_3.yaml:
+          cache: false
+      - res/teacher_4.yaml:
+          cache: false
+      - res/teacher_5.yaml:
+          cache: false
+      
   # train-stu:
   #   cmd: python src/train_stu.py
   #   deps:

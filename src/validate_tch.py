@@ -10,6 +10,7 @@ import pandas as pd
 import torch
 from tqdm import tqdm
 from sklearn.metrics import auc, f1_score, precision_score, recall_score, precision_recall_curve, roc_curve
+import yaml
 
 from utils import select_tch
 from preprocess import to_bitmap
@@ -155,11 +156,19 @@ def main():
 
         res = run_val(test_loader, df_test, app_name, model_save_path)
     
-        file_path = f"res/teacher_{tch}.json"
+        file_path = f"res/teacher_{tch}.yaml"
         with open(file_path, "w") as f:
-            print(res)
+            # Convert numpy scalars to regular Python numbers for ease of reporting and saving
+            res["opt_th"] = float(res["opt_th"][0])
+            res["f1"] = float(res["f1"][0])
+            res["f1_5"] = float(res["f1_5"][0])
+            res["p"] = float(res["p"][0])
+            res["p_5"] = float(res["p_5"][0])
+            res["r"] = float(res["r"][0])
+            res["r_5"] = float(res["r_5"][0])                                                                                  
+            yaml.dump(res, f)
 
-        print(f"Done: results saved at: res/teacher_{tch}.json")
+        print(f"Done: results saved at: res/teacher_{tch}.yaml")
 
 if __name__ == "__main__":
     main()
