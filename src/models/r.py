@@ -139,7 +139,7 @@ class ResNet(nn.Module):
 class ResNet_tiny(nn.Module):
     DIM = 4
 
-    def __init__(self, block, num_block, num_classes=100,num_channel=3):
+    def __init__(self, block, num_block, num_classes=100, num_channel=3):
         super().__init__()
 
         self.in_channels = self.DIM

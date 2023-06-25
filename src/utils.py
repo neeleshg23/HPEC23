@@ -1,6 +1,7 @@
 import dvc.api
 
 from models.d import DenseNetStudent, DenseNetTeacher
+from models.m import MLPMixer
 from models.r import resnet_tiny, resnet50
 from models.v import TMAP
 
@@ -13,7 +14,6 @@ def select_stu(option):
         channels = params["model"][f"stu_{option}"]["channels"]
         return DenseNetStudent(num_classes, channels)
     elif option == "r":
-        dim = params["model"][f"stu_{option}"]["dim"]
         channels = params["model"][f"stu_{option}"]["channels"]
         return resnet_tiny(num_classes, channels)
     elif option == "v":
@@ -45,7 +45,6 @@ def select_tch(option):
         channels = params["model"][f"tch_{option}"]["channels"]
         return DenseNetTeacher(num_classes, channels)
     elif option == "r":
-        dim = params["model"][f"tch_{option}"]["dim"]
         channels = params["model"][f"tch_{option}"]["channels"]
         return resnet50(num_classes, channels)
     elif option == "v":
@@ -55,16 +54,25 @@ def select_tch(option):
         mlp_dim = params["model"][f"tch_{option}"]["mlp-dim"]
         channels = params["model"][f"tch_{option}"]["channels"]
         return TMAP(
-            image_size=image_size,
-            patch_size=patch_size,
-            num_classes=num_classes,
-            dim=dim,
-            depth=depth,
-            heads=heads,
-            mlp_dim=mlp_dim,
-            channels=channels,
-            dim_head=mlp_dim
+            image_size = image_size,
+            patch_size = patch_size,
+            num_classes = num_classes,
+            dim = dim,
+            depth = depth,
+            heads = heads,
+            mlp_dim = mlp_dim,
+            channels = channels,
+            dim_head = mlp_dim
         )
-
-def select_cluster(option):
-    pass
+    elif option == "m":
+        channels = params["model"][f"tch_{option}"]["channels"]
+        dim = params["model"][f"tch_{option}"]["dim"]
+        depth = params["model"][f"tch_{option}"]["depth"]
+        return MLPMixer(
+            image_size = image_size,
+            channels = channels,
+            patch_size = patch_size[1],
+            dim = dim,
+            depth = depth,
+            num_classes = num_classes
+        )

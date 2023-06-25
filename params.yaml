@@ -10,11 +10,11 @@ apps:
 teacher:
   number: 5
   models:
-    - v
-    - v
-    - v
-    - v
-    - v
+    - m
+    - m
+    - m
+    - m
+    - m
 
 student:
   model: v
@@ -38,7 +38,6 @@ model:
   tch_d:
     channels: 1
   tch_r:
-    dim: 64
     channels: 1
   tch_v:
     dim: 256
@@ -46,10 +45,13 @@ model:
     heads: 10
     mlp-dim: 256
     channels: 1
+  tch_m:
+    channels: 1
+    dim: 512
+    depth: 12
   stu_d:
     channels: 1
   stu_r:
-    dim: 4
     channels: 1
   stu_v:
     dim: 16
