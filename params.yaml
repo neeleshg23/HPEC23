@@ -10,14 +10,14 @@ apps:
 teacher:
   number: 5
   models:
-    - m
-    - m
-    - m
-    - m
-    - m
+    - l
+    - l
+    - l
+    - l
+    - l
 
 student:
-  model: v
+  model: m
 
 train:
   epochs: 50
@@ -40,26 +40,40 @@ model:
   tch_r:
     channels: 1
   tch_v:
+    channels: 1
     dim: 256
     depth: 8
     heads: 10
     mlp-dim: 256
-    channels: 1
   tch_m:
     channels: 1
-    dim: 512
-    depth: 12
+    dim: 1024
+    depth: 20
+  tch_l:
+    vocab-size: 20
+    embed-dim: 300
+    hidden-dim: 512
+    num-layers: 10
   stu_d:
     channels: 1
   stu_r:
     channels: 1
   stu_v:
+    channels: 1
     dim: 16
     depth: 2
     heads: 2
     mlp-dim: 16
+  stu_m:
     channels: 1
-
+    dim: 32
+    depth: 2
+  stu_l:
+    vocab-size: 16
+    embed-dim: 10
+    hidden-dim: 50
+    num-layers: 1
+    
 hardware:
   block-bits: 6
   total-bits: 64

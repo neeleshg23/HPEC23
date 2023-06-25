@@ -141,8 +141,8 @@ stages:
           block-num-bits: 58
         model.tch_m:
           channels: 1
-          dim: 512
-          depth: 12
+          dim: 1024
+          depth: 24
         system:
           gpu-id: 0
           traces: ../LoadTraces/spec06
@@ -166,50 +166,50 @@ stages:
           temperature: 5
     outs:
     - path: model/teacher_1.pth
-      md5: f3c8fa373bb6601e51a9c10b295577ea
-      size: 13506309
+      md5: 5d300a4ec964645f5dfa6e4717d5bbde
+      size: 102778117
     - path: model/teacher_2.pth
-      md5: 24ce146b8179255c5199d30cae53236d
-      size: 13506309
+      md5: 57a1e6b1010af47322e95af7acbebf3a
+      size: 102778117
     - path: model/teacher_3.pth
-      md5: c6c6b287b8c64ddec9587e0da0e8e69e
-      size: 13506309
+      md5: 998d4b71b6ddff3d3e1da228e94f5357
+      size: 102778117
     - path: model/teacher_4.pth
-      md5: b48631ed7ec91d77234f448328a08759
-      size: 13506309
+      md5: a958cdfd864a64d3db8ef0f4a6dcbf6c
+      size: 102778117
     - path: model/teacher_5.pth
-      md5: 3206989e9efbc6992d179397fdadca5c
-      size: 13506309
+      md5: c80e962ea0c67b50def40c662b4705f3
+      size: 102778117
     - path: res/plots/metrics/train_tch_1/test_loss.tsv
-      md5: 1d0d863d2b27b0a7d77431ee7219a3fc
-      size: 1174
+      md5: 6bb7c2529f23b76031a65c1b76a600f3
+      size: 1006
     - path: res/plots/metrics/train_tch_1/train_loss.tsv
-      md5: d7238456b083a10489d5572e7044a146
-      size: 1192
+      md5: 5681d8a57edd3dcefe2f2e8b1685b6b4
+      size: 1026
     - path: res/plots/metrics/train_tch_2/test_loss.tsv
-      md5: 07ecfe4c2d5c573e9a1c7127f2a77e9d
-      size: 510
+      md5: 810a1ace2a743bdd861f877d5001925b
+      size: 393
     - path: res/plots/metrics/train_tch_2/train_loss.tsv
-      md5: 4ec35558fc00823337e244ebd0ee3340
-      size: 517
+      md5: 25a83e411c7abe494cc9666ecc82bdbb
+      size: 401
     - path: res/plots/metrics/train_tch_3/test_loss.tsv
-      md5: e0adfd74e633dd77ee7bd358218d3d5f
-      size: 1192
+      md5: e0f458e2081a6395940a9e64d71c903c
+      size: 1197
     - path: res/plots/metrics/train_tch_3/train_loss.tsv
-      md5: e1e76980259a8e8b752cb0583d60c77c
-      size: 1179
+      md5: f59fcb5657f30ad828e5bee9a3aac63d
+      size: 1195
     - path: res/plots/metrics/train_tch_4/test_loss.tsv
-      md5: bbb2acbe2f63b79b388733fa7f10233a
-      size: 1173
+      md5: d6ad5213d34fb931fdb44f525c0713ed
+      size: 1148
     - path: res/plots/metrics/train_tch_4/train_loss.tsv
-      md5: c71de3e6818970b13d75e8102a67210c
-      size: 1193
+      md5: a1114c4eb9e5db2f7747538024a24e70
+      size: 1155
     - path: res/plots/metrics/train_tch_5/test_loss.tsv
-      md5: ba11ac6c1a3865888eb7a4e6b42fc022
-      size: 1176
+      md5: fb4807a708171ce6743bde15918d4844
+      size: 1191
     - path: res/plots/metrics/train_tch_5/train_loss.tsv
-      md5: b9253d80bc9cf9b255badf7dc3ed2453
-      size: 1184
+      md5: 6b3dfcaedc133b7476e5b367f15b13b3
+      size: 1185
   validate-tchs:
     cmd: python src/validate_tch.py
     deps:
