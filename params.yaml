@@ -17,7 +17,7 @@ teacher:
     - v
 
 student:
-  model: d
+  model: v
 
 train:
   epochs: 50

@@ -1,6 +1,8 @@
 import os
 import sys
 import warnings
+
+from validate_stu import run_val
 warnings.filterwarnings('ignore')
 
 import torch
@@ -15,10 +17,11 @@ from dvclive import Live
 
 from utils import select_stu, select_tch
 
+
 torch.manual_seed(100)
 
 model = None
-teacher_model = None
+teacher_models = None
 optimizer = None
 scheduler = None
 device = None
@@ -30,7 +33,7 @@ sigmoid = torch.nn.Sigmoid()
 
 #log = config.Logger()
 
-def train(ep, train_loader, model_save_path):
+def train(ep, train_loader, model_save_path, teacher_model):
     global steps
     epoch_loss = 0
     model.train()
@@ -74,50 +77,73 @@ def test(test_loader):
             output_bin=(output>=thresh)*1
             correct+=(output_bin&target.int()).sum()
         
-        test_loss /=  len(test_loader)
+        test_loss /= len(test_loader)
         return test_loss   
 
-def run_epoch(epochs, early_stop, loading, tch_model_save_path, model_save_path, train_loader, test_loader, live):
-    teacher_model.load_state_dict(torch.load(tch_model_save_path))
-    print("-------------Teacher Model Loaded------------")
-
-    
-    if loading==True:
-        model.load_state_dict(torch.load(model_save_path))
-        print("-------------Model Loaded------------")
-        
-    best_loss=0
+def run_epoch(epochs, early_stop, loading, teacher_base_save_path, model_save_path, train_loaders, test_loaders, df_test_stu, test_loader_stu, app, live):
+    best_loss = 0
     early_stop = early_stop
     curr_early_stop = early_stop
+    num_teachers = len(train_loaders)
+
+    if loading:
+        model.load_state_dict(torch.load(model_save_path, map_location=device))
+        print("-------------Model Loaded------------")
 
     for epoch in range(epochs):
-        train_loss=train(epoch, train_loader, model_save_path)
-        test_loss=test(test_loader)
-        print((f"Epoch: {epoch+1} - loss: {train_loss:.10f} - test_loss: {test_loss:.10f}"))
+        losses_output = f"Epoch {epoch:2.0f}: "
         
-        live.log_metric("train_stu/train_loss", train_loss)
-        live.log_metric("train_stu/test_loss", test_loss)
+        for i in range(num_teachers):
+            tch_model_path = f"{teacher_base_save_path}_{i+1}.pth"
+            teacher_model = teacher_models[i].to(device)
+            teacher_model.load_state_dict(torch.load(tch_model_path, map_location=device))
+
+            train_loss = train(epoch, train_loaders[i], model_save_path, teacher_model)
+
+            test_loss = test(test_loaders[i])
+
+            losses_output += f"T{i+1}: TrainL={train_loss:.5f}, TestL={test_loss:.5f}; "
+            
+            live.log_metric(f"train_stu/train_loss_{i+1}", train_loss)
+            live.log_metric(f"train_stu/test_loss_{i+1}", test_loss)
 
         if epoch == 0:
-            best_loss=test_loss
-        if test_loss<=best_loss:
+            best_loss = test_loss
+        if test_loss <= best_loss:
             torch.save(model.state_dict(), model_save_path)    
-            best_loss=test_loss
-            print("-------- Save Best Model! --------")
+            best_loss = test_loss
+            losses_output += "Best Model Saved!"
             curr_early_stop = early_stop
         else:
             curr_early_stop -= 1
-            print("Early Stop Left: {}".format(curr_early_stop))
+            losses_output += f"Early Stop Left: {curr_early_stop}!"
+        
         if curr_early_stop == 0:
-            print("-------- Early Stop! --------")
-            break
+            losses_output += "Early Stop Triggered!"
+        
+        print("-- -- START EPOCH -- --")
+        print(losses_output)
+
+        res = run_val(test_loader_stu, df_test_stu, app, model_save_path)
+        
+        live.log_metric("train_stu/opt_threshold", res["opt_th"][0])
+        live.log_metric("train_stu/precision", res["p"][0])
+        live.log_metric("train_stu/precision_5", res["p_5"][0])
+        live.log_metric("train_stu/recall", res["r"][0])
+        live.log_metric("train_stu/recall_5", res["r_5"][0])
+        live.log_metric("train_stu/accuracy", res["f1"][0])
+        live.log_metric("train_stu/accuracy_5", res["f1_5"][0])
+
+        print(f"Epoch {epoch:2.0f} Val: opt_threshold={res['opt_th'][0]}, precision={res['p'][0]}, precision_5={res['p_5'][0]}, recall={res['r'][0]}, recall_5={res['r_5'][0]}, accuracy={res['f1'][0]}, accuracy_5={res['f1_5'][0]}")
+        print("-- -- END EPOCH -- --")
+
 
         live.next_step()
 
-    
+
 def main():
     global model
-    global teacher_model
+    global teacher_models
     global optimizer
     global scheduler
     global device
@@ -126,8 +152,10 @@ def main():
 
     params = dvc.api.params_show()
 
+    app = params["apps"]["app"]
+
     stu_option = params["student"]["model"]
-    tch_option = params["teacher"]["model"]
+    teacher_models = params["teacher"]["models"]
 
     gpu_id = params["system"]["gpu-id"]
     processed_dir = params["system"]["processed"]
@@ -141,30 +169,40 @@ def main():
     alpha = params["train"]["alpha"]
     Temperature = params["train"]["temperature"]
 
-    teacher_model = select_tch(tch_option)
     model = select_stu(stu_option)
+    print(summary(model))
+    model_save_path = os.path.join(model_dir, "student.pth")
 
     device = torch.device(f"cuda:{gpu_id}" if torch.cuda.is_available() else "cpu")
 
     os.makedirs(os.path.join(model_dir), exist_ok=True)
 
-    tch_model_save_path = os.path.join(model_dir, "teacher_1.pth")
-    model_save_path = os.path.join(model_dir, "student.pth")
-
-    train_loader = torch.load(os.path.join(processed_dir, "train_loader_1"))
-    test_loader = torch.load(os.path.join(processed_dir, "test_loader_1"))
-
     model = model.to(device)
-    teacher_model = teacher_model.to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=lr)
     scheduler = StepLR(optimizer, step_size=step_size, gamma=gamma)
 
-    loading = False
+    df_test_stu = torch.load(os.path.join(processed_dir, "df_test_stu.pt"))
+    test_loader_stu = torch.load(os.path.join(processed_dir, "test_loader_stu.pt"))
 
+    train_loaders = []
+    test_loaders = []
+    teacher_models = [select_tch(option) for option in teacher_models]
+    for i, option in enumerate(teacher_models, start=1):
+        train_loader = torch.load(os.path.join(processed_dir, f"train_loader_{i}.pt"))
+        test_loader = torch.load(os.path.join(processed_dir, f"test_loader_{i}.pt"))
+        train_loaders.append(train_loader)
+        test_loaders.append(test_loader)
+
+    teacher_base_save_path = os.path.join(model_dir, "teacher")
+    model_save_path = os.path.join(model_dir, "student.pth")
+
+
+    loading = False
     with Live(dir="res", resume=True) as live:
         live.step = 1
-        run_epoch(epochs, early_stop, loading, tch_model_save_path, model_save_path, train_loader, test_loader, live)
+        run_epoch(epochs, early_stop, loading, teacher_base_save_path, model_save_path, train_loaders, test_loaders, df_test_stu, test_loader_stu, app, live)
+
 
 if __name__ == "__main__":
     main()

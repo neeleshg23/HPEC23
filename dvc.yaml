@@ -124,54 +124,78 @@ stages:
       - res/teacher_5.yaml:
           cache: false
       
-  # train-stu:
-  #   cmd: python src/train_stu.py
-  #   deps:
-  #     - ${system.model}/teacher_1.pth
-  #     - ${system.processed}/train_loader_1
-  #     - ${system.processed}/test_loader_1
-  #     - src/train_stu.py
-  #   params:
-  #     - student.model
-  #     - model.stu_${student.model}
-  #     - teacher.model
-  #     - model.tch_${teacher.model}
-  #     - system
-  #     - hardware
-  #     - train
-  #   metrics:
-  #     - res/plots/metrics/train_stu/test_loss.tsv:
-  #         cache: false
-  #     - res/plots/metrics/train_stu/train_loss.tsv:
-  #         cache: false
-  #   outs:
-  #     - ${system.model}/student.pth
+  train-val-stu:
+    cmd: python src/train_stu.py
+    deps:
+      - ${system.model}/teacher_1.pth
+      - ${system.model}/teacher_2.pth
+      - ${system.model}/teacher_3.pth
+      - ${system.model}/teacher_4.pth
+      - ${system.model}/teacher_5.pth
+      - ${system.processed}/train_loader_1.pt
+      - ${system.processed}/train_loader_2.pt
+      - ${system.processed}/train_loader_3.pt
+      - ${system.processed}/train_loader_4.pt
+      - ${system.processed}/train_loader_5.pt
+      - ${system.processed}/test_loader_1.pt
+      - ${system.processed}/test_loader_2.pt
+      - ${system.processed}/test_loader_3.pt
+      - ${system.processed}/test_loader_4.pt
+      - ${system.processed}/test_loader_5.pt
+      - src/train_stu.py
+    params:
+      - teacher
+      - student
+      - model.stu_${student.model}
+      - model.tch_${teacher.models[0]}
+      - model.tch_${teacher.models[1]}
+      - model.tch_${teacher.models[2]}
+      - model.tch_${teacher.models[3]}
+      - model.tch_${teacher.models[4]}
+      - system
+      - hardware
+      - train
+    metrics:
+      - res/plots/metrics/train_stu/opt_threshold.tsv:
+          cache: false      
+      - res/plots/metrics/train_stu/accuracy.tsv:
+          cache: false      
+      - res/plots/metrics/train_stu/accuracy_5.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/recall.tsv:
+          cache: false      
+      - res/plots/metrics/train_stu/recall_5.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/precision.tsv:
+          cache: false      
+      - res/plots/metrics/train_stu/precision_5.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/test_loss_1.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/train_loss_1.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/test_loss_2.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/train_loss_2.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/test_loss_3.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/train_loss_3.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/test_loss_4.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/train_loss_4.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/test_loss_5.tsv:
+          cache: false
+      - res/plots/metrics/train_stu/train_loss_5.tsv:
+          cache: false
+    outs:
+      - ${system.model}/student.pth
   
-  # validate-stu:
-  #   cmd: python src/validate_stu.py
-  #   deps:
-  #     - ${system.processed}/test_loader_1
-  #     - ${system.processed}/test_df_1
-  #     - ${system.model}/student.pth
-  #     - src/validate_stu.py
-  #   params:
-  #     - student
-  #     - model.stu_${student.model}
-  #     - apps.app
-  #     - system
-  #     - hardware
-  #   metrics:
-  #     - res/student.json:
-  #         cache: false
-  
-# plots:
-#   - train-tch-1:
-#       y:
-#         res/plots/metrics/train_tch_1/train_loss.tsv: train_tch_1/train_loss
-#         res/plots/metrics/train_tch_1/test_loss.tsv: train_tch_1/test_loss
-#       y_label: loss
-#   - train-stu:
-#       y:
-#         res/plots/metrics/train_stu/train_loss.tsv: train_stu/train_loss
-#         res/plots/metrics/train_stu/test_loss.tsv: train_stu/test_loss
-#       y_label: loss
+plots:
+  - train-stu:
+      y:
+        res/plots/metrics/train_stu/accuracy.tsv: train_stu/accuracy
+        res/plots/metrics/train_stu/accuracy_5.tsv: train_stu/accuracy_5
+      y_label: Accuracy

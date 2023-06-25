@@ -1,12 +1,8 @@
-
-import json
 import os
 import dvc.api
-from dvclive import Live
 
 import numpy as np
 from numpy import nanargmax, sqrt
-import pandas as pd
 import torch
 from tqdm import tqdm
 from sklearn.metrics import auc, f1_score, precision_score, recall_score, precision_recall_curve, roc_curve

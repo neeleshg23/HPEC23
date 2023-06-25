@@ -261,8 +261,8 @@ stages:
       md5: 356190fcaf1f05d24f7b2b4ed6936236
       size: 3977915
     - path: src/validate_tch.py
-      md5: b68f6126d3ab805872399055609370e2
-      size: 6705
+      md5: 31c0b2fe5696708a686e6edbbe242587
+      size: 6647
     params:
       params.yaml:
         apps.app: 473.astar-s1.txt.xz
@@ -296,3 +296,173 @@ stages:
           - v
           - v
           - v
+    outs:
+    - path: res/teacher_1.yaml
+      md5: 2ec89480336616951b298a0f1e633670
+      size: 154
+    - path: res/teacher_2.yaml
+      md5: a428801b12557d4c04715944ceda96f7
+      size: 195
+    - path: res/teacher_3.yaml
+      md5: 956b07288f32500db89cc3358127016b
+      size: 194
+    - path: res/teacher_4.yaml
+      md5: 23455d1d466c1e929e09cbcb7efc339e
+      size: 194
+    - path: res/teacher_5.yaml
+      md5: ea901872f543c9fbaf8848515bcdbf38
+      size: 198
+  train-val-stu:
+    cmd: python src/train_stu.py
+    deps:
+    - path: model/teacher_1.pth
+      md5: a0d152ffd89b8073bfeae965d927814e
+      size: 88465545
+    - path: model/teacher_2.pth
+      md5: 0f8b539a019fcf1ad2f2236b7b24975f
+      size: 88465545
+    - path: model/teacher_3.pth
+      md5: 9ffd594586fd6275556d64a7d67c7507
+      size: 88465545
+    - path: model/teacher_4.pth
+      md5: 32ea1d3d297cb6fd80b89aa70df1ca69
+      size: 88465545
+    - path: model/teacher_5.pth
+      md5: 958c6fbee4506d2565033e903da90633
+      size: 88465545
+    - path: processed/test_loader_1.pt
+      md5: 7abb6a8ffa8c6b0fe17391e6e2c88c53
+      size: 3677307
+    - path: processed/test_loader_2.pt
+      md5: 03c425b835c1b667f828e0f00bcb20fb
+      size: 71425851
+    - path: processed/test_loader_3.pt
+      md5: 8b5b4a699cfde5d396311b3982ceb787
+      size: 14950395
+    - path: processed/test_loader_4.pt
+      md5: 69b275b1d21392b17ebef3d3c01d4a96
+      size: 11850427
+    - path: processed/test_loader_5.pt
+      md5: 356190fcaf1f05d24f7b2b4ed6936236
+      size: 3977915
+    - path: processed/train_loader_1.pt
+      md5: 41264025282d375788607e368f3b7c7e
+      size: 10040509
+    - path: processed/train_loader_2.pt
+      md5: a3884a2c43cf55a98ffb80113e47eeaf
+      size: 133867389
+    - path: processed/train_loader_3.pt
+      md5: f2c7a97c4c2e1d86ea8c9018abacada1
+      size: 11247933
+    - path: processed/train_loader_4.pt
+      md5: 33f7f49b9217c4f6a03f3b02555f60bc
+      size: 12043325
+    - path: processed/train_loader_5.pt
+      md5: 23a79ef51792abeafe9f07d3ae0a7450
+      size: 10426493
+    - path: src/train_stu.py
+      md5: 2eaf0ee0b2ed2bd57fc9e1ef013c4e49
+      size: 6937
+    params:
+      params.yaml:
+        hardware:
+          block-bits: 6
+          total-bits: 64
+          look-back: 9
+          pred-forward: 128
+          page-bits: 12
+          delta-bound: 128
+          split-bits: 6
+          filter-size: 16
+          bitmap-size: 256
+          block-num-bits: 58
+        model.stu_v:
+          dim: 16
+          depth: 2
+          heads: 2
+          mlp-dim: 16
+          channels: 1
+        model.tch_v:
+          dim: 256
+          depth: 8
+          heads: 10
+          mlp-dim: 256
+          channels: 1
+        student:
+          model: v
+        system:
+          gpu-id: 0
+          traces: ../LoadTraces/spec06
+          processed: processed
+          model: model
+        teacher:
+          number: 5
+          models:
+          - v
+          - v
+          - v
+          - v
+          - v
+        train:
+          epochs: 50
+          lr: 0.0002
+          gamma: 0.1
+          step-size: 20
+          early-stop: 10
+          alpha: 0.5
+          temperature: 5
+    outs:
+    - path: model/student.pth
+      md5: f61466fc867300f70147f9d917f6c1e7
+      size: 51403
+    - path: res/plots/metrics/train_stu/accuracy.tsv
+      md5: 35f1c3deaa9e4bfab180c694c5eb8367
+      size: 1137
+    - path: res/plots/metrics/train_stu/accuracy_5.tsv
+      md5: 3206d4ee680bf4fbc221da9149126c1a
+      size: 1131
+    - path: res/plots/metrics/train_stu/opt_threshold.tsv
+      md5: 3271752ec6411014ad6a19e9e33fe2c8
+      size: 702
+    - path: res/plots/metrics/train_stu/precision.tsv
+      md5: 968aa6cceb187c5fdafb9b3194a42914
+      size: 1115
+    - path: res/plots/metrics/train_stu/precision_5.tsv
+      md5: 30de99a93d38bbcf0cd74cb5faa27396
+      size: 1130
+    - path: res/plots/metrics/train_stu/recall.tsv
+      md5: 3220cd006473a493896afe47a1abb9af
+      size: 1130
+    - path: res/plots/metrics/train_stu/recall_5.tsv
+      md5: 5a5d578657e1177257cb8c95c5af25df
+      size: 1153
+    - path: res/plots/metrics/train_stu/test_loss_1.tsv
+      md5: 85d7bfa1a53c10809fbdb16408c29b99
+      size: 1169
+    - path: res/plots/metrics/train_stu/test_loss_2.tsv
+      md5: e87a622311b5be20cc7478fc62e2b4e4
+      size: 1170
+    - path: res/plots/metrics/train_stu/test_loss_3.tsv
+      md5: 6efdad97b92f63e1e4aa4784b39901b9
+      size: 1175
+    - path: res/plots/metrics/train_stu/test_loss_4.tsv
+      md5: 727fbf4c3a1ca9ddcaf3cecab03112c2
+      size: 1172
+    - path: res/plots/metrics/train_stu/test_loss_5.tsv
+      md5: e9ad4f5fe0a28f813bd891c381bb1e0d
+      size: 1162
+    - path: res/plots/metrics/train_stu/train_loss_1.tsv
+      md5: 29059167ebf33c071d26e304cbcf17bd
+      size: 1180
+    - path: res/plots/metrics/train_stu/train_loss_2.tsv
+      md5: 486a588bbac9f4a30e76cfba7474ca0f
+      size: 1181
+    - path: res/plots/metrics/train_stu/train_loss_3.tsv
+      md5: 51e58187008d147f9db275ff8e3e5ff8
+      size: 1182
+    - path: res/plots/metrics/train_stu/train_loss_4.tsv
+      md5: 30385a693030fc72af087d78c15b8c20
+      size: 1190
+    - path: res/plots/metrics/train_stu/train_loss_5.tsv
+      md5: 209e4634855c21cb204fc57ed68b4139
+      size: 1183
