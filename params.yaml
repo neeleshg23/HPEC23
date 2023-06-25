@@ -1,8 +1,8 @@
 system:
   gpu-id: 0
-  traces: ../LoadTraces/spec06
-  processed: processed
-  model: model
+  traces: /data/pengmiao/ML-DPC-50/LoadTraces
+  processed: /data/pengmiao/HPEC23/processed
+  model: /data/pengmiao/HPEC23/model
 
 apps:
   app: 473.astar-s1.txt.xz
@@ -15,9 +15,8 @@ teacher:
     - l
     - l
     - l
-
 student:
-  model: m
+  model: l
 
 train:
   epochs: 50
@@ -29,8 +28,8 @@ train:
   temperature: 5
 
 trace-data:
-  train: 2
-  total: 3
+  train: 20
+  total: 30
   skip: 1
   batch-size: 256
 

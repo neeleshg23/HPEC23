@@ -92,6 +92,8 @@ def run_epoch(epochs, early_stop, loading, teacher_base_save_path, model_save_pa
 
     for epoch in range(epochs):
         losses_output = f"Epoch {epoch:2.0f}: "
+
+        print(f"-------------Start Epoch {epoch}-------------")
         
         for i in range(num_teachers):
             tch_model_path = f"{teacher_base_save_path}_{i+1}.pth"
@@ -121,7 +123,6 @@ def run_epoch(epochs, early_stop, loading, teacher_base_save_path, model_save_pa
         if curr_early_stop == 0:
             losses_output += "Early Stop Triggered!"
         
-        print("-- -- START EPOCH -- --")
         print(losses_output)
 
         res = run_val(test_loader_stu, df_test_stu, app, model_save_path)
@@ -135,8 +136,6 @@ def run_epoch(epochs, early_stop, loading, teacher_base_save_path, model_save_pa
         live.log_metric("train_stu/accuracy_5", res["f1_5"][0])
 
         print(f"Epoch {epoch:2.0f} Val: opt_threshold={res['opt_th'][0]}, precision={res['p'][0]}, precision_5={res['p_5'][0]}, recall={res['r'][0]}, recall_5={res['r_5'][0]}, accuracy={res['f1'][0]}, accuracy_5={res['f1_5'][0]}")
-        print("-- -- END EPOCH -- --")
-
 
         live.next_step()
 
